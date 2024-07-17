@@ -1,0 +1,33 @@
+services:
+
+  zookeeper:
+    container_name: payment_zookeeper
+    hostname: zookeeper
+    restart: unless-stopped
+    image: confluentinc/cp-zookeeper:7.4.4
+    ports:
+      - 22181:2181
+    env_file:
+      - .env
+    volumes:
+      - zookeeper_data:/var/lib/zookeeper
+
+  kafka:
+    image: confluentinc/cp-kafka:7.4.4
+    container_name: payment_kafka
+    hostname: kafka
+    restart: unless-stopped
+    ports:
+      - 29092:29092
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    depends_on:
+      - zookeeper
+    env_file:
+      - .env
+
+volumes:
+  zookeeper_data:
+    driver: local
+  kafka_data:
+    driver: local

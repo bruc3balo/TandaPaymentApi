@@ -1,0 +1,25 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyHbmImpl
+    generate-ddl: true
+    show-sql: true
+    database-platform: ${spring.datasource.driver-class-name}
+    properties:
+      javax:
+        persistence:
+          jdbc:
+            url: "${spring.datasource.url}"
+            driver: "${spring.datasource.driver-class-name}"
+            user: "${spring.datasource.username}"
+            password: "${spring.datasource.password}"
+          schema-generation:
+            database:
+              action: ${spring.jpa.hibernate.ddl-auto}
+            scripts:
+              action: ${spring.jpa.hibernate.ddl-auto}
+              create-target: payment-api.sql
+              create-source: metadata

@@ -1,0 +1,30 @@
+server:
+  port: 6793
+
+  servlet:
+    context-path: /${spring.application.name}
+
+spring:
+  application:
+    name: payment-api
+
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+  config:
+    import: classpath:jpa.yaml
+
+logging:
+  level:
+    org:
+      hibernate:
+        sql: error
+      springframework:
+        security: debug
+        data:
+          mongodb:
+            core: debug
+debug:
+  false

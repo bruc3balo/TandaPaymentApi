@@ -1,0 +1,22 @@
+services:
+
+  db:
+    image: mariadb
+    container_name: payment_mariadb
+    hostname: mariadb
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    env_file:
+      - .env
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD-SHELL", "mysqladmin ping -h localhost -u root -p$${MYSQL_ROOT_PASSWORD} || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 80s
+
+volumes:
+  mariadb_data:
