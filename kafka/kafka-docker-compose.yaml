@@ -6,7 +6,7 @@ services:
     restart: unless-stopped
     image: confluentinc/cp-zookeeper:7.4.4
     ports:
-      - 22181:2181
+      - "22181:2181"
     env_file:
       - .env
     volumes:
@@ -18,7 +18,7 @@ services:
     hostname: kafka
     restart: unless-stopped
     ports:
-      - 29092:29092
+      - "29092:29092"
     volumes:
       - kafka_data:/var/lib/kafka/data
     depends_on:

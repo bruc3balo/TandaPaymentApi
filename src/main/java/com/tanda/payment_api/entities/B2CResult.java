@@ -1,7 +1,6 @@
 package com.tanda.payment_api.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.tanda.payment_api.globals.GlobalVariables;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,55 +15,35 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "b2c_requests")
+@Table(name = "b2c_result")
 @Getter
 @Setter
-@Builder
 @AllArgsConstructor
+@Builder
 @EntityListeners(AuditingEntityListener.class)
-public class B2CRequest {
-
+public class B2CResult {
     @Id
     @UuidGenerator
     private String id;
 
-    @Column(name = "initiator_name")
-    private String initiatorName;
-
-    @Column(name = "originator_conversation_id")
+    private Integer resultType;
+    private Integer resultCode;
+    private String resultDescription;
     private String originatorConversationId;
-
-    @Column(name = "security_credential", length = 500)
-    private String securityCredential;
-
-    @Column(name = "command_id")
-    private String commandId;
-
-    private Integer amount;
-
-    @Column(name = "partya")
-    private Integer partyA;
-
-    @Column(name = "partyb")
-    private Long partyB;
-    private String remarks;
-
-    @Column(name = "time_out_url")
-    private String timeOutUrl;
-
-    @Column(name = "result_url")
-    private String resultUrl;
-
-    private String occasion;
-
-    @Column(name = "response_code")
-    private String responseCode;
-
-    @Column(name = "response_description")
-    private String responseDescription;
+    private String conversationId;
+    private String transactionId;
+    private String queueTimeoutUrl;
+    private String transactionAmount;
+    private String transactionReceipt;
+    private Boolean b2cRecipientRegisteredCustomer;
+    private BigDecimal b2cChargesPaidAccountAvailableFunds;
+    private String receiverPartyPublicName;
+    private LocalDateTime transactionCompletedDateTime;
+    private BigDecimal b2CUtilityAccountAvailableFunds;
+    private BigDecimal b2CWorkingAccountAvailableFunds;
 
     @JoinColumn(name = "b2c_request_id")
-    @OneToOne(mappedBy = "request")
+    @OneToOne(mappedBy = "result")
     @JsonIgnore
     private B2CTransactions b2CTransaction;
 
@@ -76,8 +55,7 @@ public class B2CRequest {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-
-    public B2CRequest() {
+    public B2CResult() {
 
     }
 }

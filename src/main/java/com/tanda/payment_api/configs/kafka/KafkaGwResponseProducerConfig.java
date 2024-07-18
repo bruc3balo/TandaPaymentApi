@@ -1,5 +1,8 @@
 package com.tanda.payment_api.configs.kafka;
 
+import com.tanda.payment_api.globals.GlobalVariables;
+import com.tanda.payment_api.models.GwRequest;
+import com.tanda.payment_api.models.GwResponse;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.context.annotation.Bean;
@@ -15,17 +18,16 @@ import java.util.Map;
 
 @Configuration
 @ComponentScan(basePackageClasses = {KafkaProperties.class})
-public class KafkaSimpleMailProducerConfig {
+public class KafkaGwResponseProducerConfig {
 
     private final KafkaProperties kafkaProperties;
 
-    public KafkaSimpleMailProducerConfig(KafkaProperties kafkaProperties) {
+    public KafkaGwResponseProducerConfig(KafkaProperties kafkaProperties) {
         this.kafkaProperties = kafkaProperties;
 
     }
 
-    //Todo type
-    public Map<String, Object> simpleNotificationConfig() {
+    public Map<String, Object> jsonConfig() {
         Map<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaProperties.getBootstrapServers());
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -33,15 +35,15 @@ public class KafkaSimpleMailProducerConfig {
         return props;
     }
 
+    //GwRequest
     @Bean
-    public ProducerFactory<String, ?> simpleNotificationProducerFactory() {
-        return new DefaultKafkaProducerFactory<>(simpleNotificationConfig());
+    public ProducerFactory<String, GwResponse> gwResponseProducerFactory() {
+        return new DefaultKafkaProducerFactory<>(jsonConfig());
     }
 
-    //todo ? type
-    @Bean(name = "simpleNotificationKafkaTemplate")
-    public KafkaTemplate<String, ?> simpleNotificationKafkaTemplate(ProducerFactory<String, ?> simpleNotificationProducerFactory) {
-        return new KafkaTemplate<>(simpleNotificationProducerFactory);
+    @Bean(name = GlobalVariables.GW_RESPONSE_KAFKA_TEMPLATE)
+    public KafkaTemplate<String, GwResponse> gwResponseKafkaTemplate(ProducerFactory<String, GwResponse> gwResponseProducerFactory) {
+        return new KafkaTemplate<>(gwResponseProducerFactory);
     }
 
 }

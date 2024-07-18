@@ -1,0 +1,15 @@
+spring:
+  kafka:
+    client-id: ${spring.application.name}-${random.int}
+    bootstrap-servers:
+      - ${kafka.servers[0]}
+      - ${kafka.servers[1]}
+    properties:
+      topic:
+        auto:
+          create:
+            enable: true
+    producer:
+      bootstrap-servers:
+        - ${kafka.servers[0]}
+        - ${kafka.servers[1]}

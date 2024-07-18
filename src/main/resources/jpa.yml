@@ -9,6 +9,15 @@ spring:
     show-sql: true
     database-platform: ${spring.datasource.driver-class-name}
     properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MariaDBDialect
+        hbm2ddl:
+          schema-generation:
+            auto: update
+            scripts:
+              action: create
+              create-target: target/schema.sql
+              drop-target: target/drop.sql
       javax:
         persistence:
           jdbc:
@@ -18,8 +27,8 @@ spring:
             password: "${spring.datasource.password}"
           schema-generation:
             database:
-              action: ${spring.jpa.hibernate.ddl-auto}
+              action: drop-and-create
             scripts:
               action: ${spring.jpa.hibernate.ddl-auto}
-              create-target: payment-api.sql
-              create-source: metadata
+              create-target: payment-api-schema.sql
+              drop-target: drop-payment-api-schema.sql

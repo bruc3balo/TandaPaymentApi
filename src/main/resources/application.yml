@@ -14,7 +14,12 @@ spring:
       matching-strategy: ant_path_matcher
 
   config:
-    import: classpath:jpa.yaml
+    import:
+      - classpath:jpa.yml
+      - classpath:kafka.yml
+
+  jackson:
+    property-naming-strategy: SNAKE_CASE
 
 logging:
   level:

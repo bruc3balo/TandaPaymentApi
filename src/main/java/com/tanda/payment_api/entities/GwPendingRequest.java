@@ -1,6 +1,5 @@
 package com.tanda.payment_api.entities;
 
-import com.tanda.payment_api.enums.B2CTransactionStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,37 +10,33 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(
-        name = "b2c_transactions",
-        indexes = @Index(name = "conversation_id_index", columnList = "conversation_id")
-)
+@Table(name = "gw_pending_requests")
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class B2CTransactions {
+public class GwPendingRequest {
 
     @Id
     @UuidGenerator
     private String id;
 
-    @Column(name = "conversation_id", unique = true)
-    private String conversationId;
+    @Column(name = "transaction_id")
+    private String transactionId;
 
-    @Enumerated(EnumType.STRING)
-    private B2CTransactionStatus status;
+    private BigDecimal amount;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "b2c_request_id")
-    private B2CRequest request;
+    private Long mobileNumber;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "b2c_result_id")
-    private B2CResult result;
+    private String statusReason;
+
+    @Column(name = "retry_count")
+    private Integer retryCount;
 
     @LastModifiedDate
     @Column(name = "updated_at")
@@ -51,7 +46,8 @@ public class B2CTransactions {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    public B2CTransactions() {
+
+    public GwPendingRequest() {
 
     }
 }
