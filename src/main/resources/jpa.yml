@@ -13,7 +13,7 @@ spring:
         dialect: org.hibernate.dialect.MariaDBDialect
         hbm2ddl:
           schema-generation:
-            auto: create-drop
+            auto: update
             scripts:
               action: create
               create-target: target/schema.sql
@@ -27,7 +27,7 @@ spring:
             password: "${spring.datasource.password}"
           schema-generation:
             database:
-              action: drop-and-create
+              action: update
             scripts:
               action: ${spring.jpa.hibernate.ddl-auto}
               create-target: payment-api-schema.sql
