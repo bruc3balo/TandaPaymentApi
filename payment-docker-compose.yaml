@@ -1,0 +1,40 @@
+services:
+
+  payment_api:
+    image: openjdk:17
+    container_name: tanda_payment_api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    ports:
+      - "6793:6793"
+    env_file:
+      - .env
+    command: tail -f /dev/null
+
+  #    command: "java -jar /payment-api.jar"
+
+  mariadb:
+    extends:
+      service: mariadb
+      file: mariadb/mariadb-docker-compose.yaml
+
+  zookeeper:
+    extends:
+      service: zookeeper
+      file: kafka/kafka-docker-compose.yaml
+
+  kafka:
+    extends:
+      service: kafka
+      file: kafka/kafka-docker-compose.yaml
+    depends_on:
+      - zookeeper
+
+volumes:
+  mariadb_data:
+  kafka_data:
+  zookeeper_data:

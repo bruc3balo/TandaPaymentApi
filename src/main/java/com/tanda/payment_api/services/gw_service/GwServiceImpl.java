@@ -9,6 +9,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.tanda.payment_api.globals.GlobalVariables.MAX_RETRY_COUNT;
+
 @Service
 @Transactional
 public class GwServiceImpl implements GwService {
@@ -21,7 +23,7 @@ public class GwServiceImpl implements GwService {
 
     @Override
     public Page<GwPendingRequest> fetchPendingRequests(Pageable pageable) {
-        return pendingRequestsRepository.findByRetryCountLessThan(4, pageable);
+        return pendingRequestsRepository.findByRetryCountLessThan(MAX_RETRY_COUNT, pageable);
     }
 
     @Override

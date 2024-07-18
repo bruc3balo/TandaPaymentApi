@@ -31,8 +31,10 @@ public class GwPendingRequest {
 
     private BigDecimal amount;
 
+    @Column(name = "mobile_number")
     private Long mobileNumber;
 
+    @Column(name = "status_reason")
     private String statusReason;
 
     @Column(name = "retry_count")

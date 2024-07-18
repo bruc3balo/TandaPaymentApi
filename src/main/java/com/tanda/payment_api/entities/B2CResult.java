@@ -26,20 +26,49 @@ public class B2CResult {
     @UuidGenerator
     private String id;
 
+    @Column(name = "result_type")
     private Integer resultType;
+
+    @Column(name = "result_code")
     private Integer resultCode;
+
+    @Column(name = "result_description")
     private String resultDescription;
+
+    @Column(name = "originator_conversation_id")
     private String originatorConversationId;
+
+    @Column(name = "conversation_id")
     private String conversationId;
+
+    @Column(name = "transaction_id")
     private String transactionId;
+
+    @Column(name = "queue_timeout_url")
     private String queueTimeoutUrl;
+
+    @Column(name = "transaction_amount")
     private String transactionAmount;
+
+    @Column(name = "transaction_receipt")
     private String transactionReceipt;
+
+    @Column(name = "b2c_recipient_registered_customer")
     private Boolean b2cRecipientRegisteredCustomer;
+
+    @Column(name = "b2c_charges_paid_account_available_funds")
     private BigDecimal b2cChargesPaidAccountAvailableFunds;
+
+    @Column(name = "receiver_party_public_name")
     private String receiverPartyPublicName;
+
+    @Column(name = "transaction_completed_date_time")
     private LocalDateTime transactionCompletedDateTime;
+
+    @Column(name = "b2c_utility_account_available_funds")
     private BigDecimal b2CUtilityAccountAvailableFunds;
+
+    @Column(name = "b2c_working_account_available_funds")
     private BigDecimal b2CWorkingAccountAvailableFunds;
 
     @JoinColumn(name = "b2c_request_id")

@@ -56,9 +56,16 @@ public class B2CTransactionServiceImpl implements B2CTransactionService {
                 .build();
         b2CTransactions = b2cTransactionRepository.save(b2CTransactions);
 
-        //b2cResponse Model
-        B2CResponseModel b2CResponseModel = darajaService.initiateB2c(accessToken, b2CTransactions.getId(), requests);
-        return doInitiateB2c(b2CResponseModel, b2CTransactions);
+        //Receive b2c response
+        B2CResponseModel b2CResponseModel = darajaService.initiateB2cGWRequest(accessToken, b2CTransactions.getId(), requests);
+        B2CTransactions transaction = doInitiateB2c(b2CResponseModel, b2CTransactions);
+
+        //Assert that status should be pending
+        if(transaction.getStatus() != B2CTransactionStatus.PENDING) {
+            throw HttpStatusException.failed("Transaction "+transaction.getStatus().name());
+        }
+
+        return transaction;
     }
 
     //From Api Source
@@ -75,15 +82,15 @@ public class B2CTransactionServiceImpl implements B2CTransactionService {
                 .build();
         b2CTransactions = b2cTransactionRepository.save(b2CTransactions);
 
-        //b2cResponse Model
-        B2CResponseModel b2CResponseModel = darajaService.initiateB2c(accessToken, b2CTransactions.getId(), requestBodyForm);
+        //Receive b2c response
+        B2CResponseModel b2CResponseModel = darajaService.initiateB2cApiRequest(accessToken, b2CTransactions.getId(), requestBodyForm);
         return doInitiateB2c(b2CResponseModel, b2CTransactions);
     }
 
     //Do common functions from initiateB2C
     private B2CTransactions doInitiateB2c(B2CResponseModel b2CResponseModel, B2CTransactions b2CTransactions) {
 
-        log.debug("{} => {}", b2CResponseModel.getOriginatorConversationID(), b2CResponseModel.getResponseDescription());
+        log.debug("B2C :: {} => {}", b2CResponseModel.getOriginatorConversationID(), b2CResponseModel.getResponseDescription());
 
         // Persist request details
 
@@ -95,8 +102,8 @@ public class B2CTransactionServiceImpl implements B2CTransactionService {
                 .securityCredential(form.getSecurityCredential())
                 .commandId(form.getCommandID())
                 .amount(form.getAmount())
-                .partyA(form.getPartyA())
-                .partyB(form.getPartyB())
+                .partyA(Integer.valueOf(form.getPartyA()))
+                .partyB(Long.valueOf(form.getPartyB()))
                 .remarks(form.getRemarks())
                 .occasion(form.getOccasion())
                 .resultUrl(b2CResponseModel.getForm().getResultURL())
@@ -115,14 +122,14 @@ public class B2CTransactionServiceImpl implements B2CTransactionService {
         return b2cTransactionRepository.save(b2CTransactions);
     }
 
-    //Receive result of b2c
+    //Receive result of b2c from daraja
     @Override
     public B2CTransactions onB2cResult(B2CResultRequestBodyForm form) {
 
         log.debug("Received b2c result");
 
         B2CResultForm resultForm = form.getResultForm();
-        B2CTransactions b2CTransactions = b2cTransactionRepository.findByConversationIdNotNull(resultForm.getConversationID()).orElseThrow(() -> HttpStatusException.notFound("Transaction not found"));
+        B2CTransactions b2CTransactions = b2cTransactionRepository.findByConversationIdAndConversationIdIsNotNull(resultForm.getConversationID()).orElseThrow(() -> HttpStatusException.notFound("Transaction not found"));
 
         if (b2CTransactions.getResult() != null) throw HttpStatusException.duplicate("Result already recorded");
 
@@ -197,6 +204,7 @@ public class B2CTransactionServiceImpl implements B2CTransactionService {
         B2CResult b2CResult = b2CTransactions.getResult();
 
         GwResponse gwResponse = GwResponse.builder()
+                .id(b2CTransactions.getId())
                 .mpesaReference(b2CResult.getTransactionReceipt())
                 .status(b2CTransactions.getStatus().name())
                 .build();

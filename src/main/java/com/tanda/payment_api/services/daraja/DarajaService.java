@@ -8,7 +8,7 @@ import jakarta.validation.Valid;
 public interface DarajaService {
     DarajaAuthResponse authenticate() throws JsonProcessingException;
 
-    B2CResponseModel initiateB2c(String accessToken, String originatorConversationID, @Valid GwPendingRequest gwRequest) throws JsonProcessingException;
+    B2CResponseModel initiateB2cGWRequest(String accessToken, String originatorConversationID, @Valid GwPendingRequest gwRequest) throws JsonProcessingException;
 
-    B2CResponseModel initiateB2c(String accessToken, String originatorConversationID, B2CRequestBodyForm form) throws JsonProcessingException;
+    B2CResponseModel initiateB2cApiRequest(String accessToken, String originatorConversationID, B2CRequestBodyForm form) throws JsonProcessingException;
 }

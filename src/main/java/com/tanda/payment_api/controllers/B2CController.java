@@ -5,6 +5,7 @@ import com.tanda.payment_api.entities.B2CTransactions;
 import com.tanda.payment_api.exceptions.HttpStatusException;
 import com.tanda.payment_api.models.*;
 import com.tanda.payment_api.services.b2c.B2CTransactionService;
+import com.tanda.payment_api.services.kafka.KafkaService;
 import jakarta.validation.Valid;
 import org.apache.kafka.shaded.com.google.protobuf.Api;
 import org.springframework.data.domain.Page;
@@ -21,7 +22,7 @@ public class B2CController {
 
     private final B2CTransactionService b2CTransactionService;
 
-    public B2CController(B2CTransactionService b2CTransactionService) {
+    public B2CController(B2CTransactionService b2CTransactionService, KafkaService kafkaService) {
         this.b2CTransactionService = b2CTransactionService;
     }
 
@@ -40,9 +41,10 @@ public class B2CController {
         return new ResponseEntity<>(apiResponse, status);
     }
 
-    @PostMapping
+    @PostMapping("manual")
     public ResponseEntity<?> initiateB2cRequest(@Valid @RequestBody B2CRequestBodyForm form) throws JsonProcessingException {
         B2CTransactions b2CTransactions = b2CTransactionService.initiateB2C(form);
+
         var status = HttpStatus.OK;
 
         ApiResponse<?> apiResponse = ApiResponse.builder()

@@ -11,7 +11,7 @@ import java.util.List;
 @Setter
 public class ResultParameters {
 
-    @JsonProperty(GlobalVariables.RESULT_PARAMETERS)
+    @JsonProperty(GlobalVariables.RESULT_PARAMETER)
     private List<KeyValueItemPair> resultParameter;
 
     public ResultParameters() {

@@ -21,15 +21,20 @@ spring:
   jackson:
     property-naming-strategy: SNAKE_CASE
 
+  datasource:
+    url: jdbc:${spring.datasource.protocol}://${spring.datasource.host}:${spring.datasource.port}/${spring.datasource.database}
+
 logging:
   level:
     org:
       hibernate:
         sql: error
       springframework:
+        kafka: debug
+        web: debug
         security: debug
         data:
           mongodb:
             core: debug
 debug:
-  false
+  true

@@ -39,11 +39,11 @@ public class B2CRequestBodyForm {
 
     @JsonProperty(PARTY_A)
     @Pattern(regexp = "^\\d{5,6}$", message = PARTY_A+" must be 5 or 6 digits")
-    private Integer partyA;
+    private String partyA;
 
     @JsonProperty(PARTY_B)
     @Pattern(regexp = "^254.*$", message = PARTY_B+" number must start with 254")
-    private Long partyB;
+    private String partyB;
 
     @JsonProperty(REMARKS)
     @Length(max = 100)

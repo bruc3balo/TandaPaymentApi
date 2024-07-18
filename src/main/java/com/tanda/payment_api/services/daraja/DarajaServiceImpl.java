@@ -13,8 +13,6 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.text.SimpleDateFormat;
-
 @Service
 @Slf4j
 public class DarajaServiceImpl implements DarajaService {
@@ -25,9 +23,6 @@ public class DarajaServiceImpl implements DarajaService {
     @Value("${daraja.auth.url}")
     private String darajaAuthUrl;
 
-    @Value("${daraja.host}")
-    private String darajaHost;
-
     @Value("${daraja.key}")
     private String consumerKey;
 
@@ -37,7 +32,7 @@ public class DarajaServiceImpl implements DarajaService {
     @Value("${daraja.result.url}")
     private String resultURL;
 
-    @Value("${daraja.queue.timeout.url}")
+    @Value("${daraja.result.url}")
     private String queueTimeOutURL;
 
     @Value("${initiator.name}")
@@ -53,14 +48,12 @@ public class DarajaServiceImpl implements DarajaService {
 
     private final ObjectMapper objectMapper;
 
-    private static final SimpleDateFormat darajaDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+    //private static final SimpleDateFormat darajaDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
 
     public DarajaServiceImpl(RestTemplate restTemplate, ObjectMapper objectMapper) {
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
-
     }
-
 
     @Override
     public DarajaAuthResponse authenticate() throws JsonProcessingException {
@@ -84,14 +77,14 @@ public class DarajaServiceImpl implements DarajaService {
         }
 
         assert (authenticateResponse.getBody() != null);
-        DarajaAuthResponse body = objectMapper.readValue(authenticateResponse.getBody().asText(), DarajaAuthResponse.class);
+        DarajaAuthResponse body = objectMapper.readValue(authenticateResponse.getBody().toString(), DarajaAuthResponse.class);
         if (body == null) throw HttpStatusException.failed("Daraja did not return an authentication response");
 
         return body;
     }
 
     @Override
-    public B2CResponseModel initiateB2c(String accessToken, String originatorConversationID, @Valid GwPendingRequest gwRequest) throws JsonProcessingException {
+    public B2CResponseModel initiateB2cGWRequest(String accessToken, String originatorConversationID, @Valid GwPendingRequest gwRequest) throws JsonProcessingException {
         log.debug("initiating b2c request");
 
 
@@ -101,8 +94,8 @@ public class DarajaServiceImpl implements DarajaService {
                 .securityCredential(securityCredentials)
                 .commandID("BusinessPayment")
                 .amount(gwRequest.getAmount().intValue())
-                .partyA(businessShortCode)
-                .partyB(gwRequest.getMobileNumber())
+                .partyA(String.valueOf(businessShortCode))
+                .partyB(String.valueOf(gwRequest.getMobileNumber()))
                 .remarks("GW request transaction")
                 .occasion("Testing")
                 .resultURL(resultURL)
@@ -112,9 +105,8 @@ public class DarajaServiceImpl implements DarajaService {
         return doInitiateB2c(accessToken, request);
     }
 
-
     @Override
-    public B2CResponseModel initiateB2c(String accessToken, String originatorConversationID, @Valid B2CRequestBodyForm form) throws JsonProcessingException {
+    public B2CResponseModel initiateB2cApiRequest(String accessToken, String originatorConversationID, @Valid B2CRequestBodyForm form) throws JsonProcessingException {
 
         log.debug("initiating b2c request");
 
@@ -137,7 +129,6 @@ public class DarajaServiceImpl implements DarajaService {
 
     }
 
-
     private B2CResponseModel doInitiateB2c(String accessToken, B2CRequestForm request) throws JsonProcessingException {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(accessToken);
@@ -157,7 +148,7 @@ public class DarajaServiceImpl implements DarajaService {
 
 
         assert (b2cResponse.getBody() != null);
-        B2CResponseModel body = objectMapper.readValue(b2cResponse.getBody().asText(), B2CResponseModel.class);
+        B2CResponseModel body = objectMapper.readValue(b2cResponse.getBody().toString(), B2CResponseModel.class);
         if (body == null) throw HttpStatusException.failed("Daraja did not return a response");
 
         body.setForm(request);

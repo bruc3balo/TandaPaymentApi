@@ -1,6 +1,7 @@
 package com.tanda.payment_api.globals;
 
 public class GlobalVariables {
+    public static final Integer MAX_RETRY_COUNT = 3;
     public static final String GW_RESPONSE_KAFKA_TEMPLATE = "gwResponseKafkaTemplate";
     public static final String QUEUE_TIME_OUT_URL = "QueueTimeOutURL";
     public static final String REMARKS = "Remarks";
@@ -13,13 +14,16 @@ public class GlobalVariables {
     public static final String RESPONSE_CODE = "ResponseCode";
     public static final String CONVERSATION_ID = "ConversationID";
     public static final String ORIGINATOR_CONVERSATION_ID = "OriginatorConversationID";
+    public static final String KAFKA_GW_GROUP_ID = "gw_payment";
+    public static final String KAFKA_GW_REQUEST_TOPIC = "gw_request";
+    public static final String KAFKA_GW_RESPONSE_TOPIC = "gw_response";
     public static final String RESULT = "Result";
-    public static final String RESULT_URL = RESULT+"URL";
-    public static final String RESULT_TYPE = RESULT+"Type";
-    public static final String RESULT_DESC = RESULT+"Desc";
-    public static final String RESULT_CODE = RESULT+"Code";
-    public static final String RESULT_PARAMETER = RESULT+"Parameter";
-    public static final String RESULT_PARAMETERS = RESULT_PARAMETER+"s";
+    public static final String RESULT_URL = RESULT + "URL";
+    public static final String RESULT_TYPE = RESULT + "Type";
+    public static final String RESULT_DESC = RESULT + "Desc";
+    public static final String RESULT_CODE = RESULT + "Code";
+    public static final String RESULT_PARAMETER = RESULT + "Parameter";
+    public static final String RESULT_PARAMETERS = RESULT_PARAMETER + "s";
     public static final String REFERENCE_DATA = "ReferenceData";
     public static final String REFERENCE_ITEM = "ReferenceItem";
     public static final String SECURITY_CREDENTIALS = "SecurityCredential";
