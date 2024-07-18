@@ -13,9 +13,7 @@ services:
       - "6793:6793"
     env_file:
       - .env
-    command: tail -f /dev/null
-
-  #    command: "java -jar /payment-api.jar"
+    command: "java -jar /payment-api.jar"
 
   mariadb:
     extends:

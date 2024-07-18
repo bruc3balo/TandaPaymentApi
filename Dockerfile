@@ -1,4 +1,4 @@
-# Stage 1: Build stage i.e. install node modules
+# Stage 1: Build stage i.e. install maven dependancies
 FROM maven:latest as build
 
 WORKDIR /app

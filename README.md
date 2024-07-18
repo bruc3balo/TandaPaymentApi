@@ -16,7 +16,6 @@ docker compose up -f mariadb/maria-db-docker-compose.yaml -d
 docker compose up -f kafka/kafka-docker-compose.yaml -d
 ```
 
-
 # Deploying
 
 Code changes will be picked up by building a new image or passing --build service to **docker compose up**
@@ -33,7 +32,7 @@ docker compose -f payment-docker-compose.yaml down -v
 
 ### Start without building
 ```bash
-docker compose -f payment-docker-compose.yaml down up -d
+docker compose -f payment-docker-compose.yaml up -d
 ```
 
 ### Watch Logs
