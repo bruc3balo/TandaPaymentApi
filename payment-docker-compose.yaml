@@ -3,6 +3,7 @@ services:
   payment_api:
     image: openjdk:17
     container_name: tanda_payment_api
+    hostname: tanda_payment_api
     restart: unless-stopped
     build:
       context: .
