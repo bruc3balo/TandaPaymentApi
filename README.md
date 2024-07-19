@@ -1,5 +1,16 @@
 
-# API
+
+                     _________  ________  ________   ________  ________          ________  ________      ___    ___ _____ ______   _______   ________   _________        ________  ________  ___
+                    |\___   ___\\   __  \|\   ___  \|\   ___ \|\   __  \        |\   __  \|\   __  \    |\  \  /  /|\   _ \  _   \|\  ___ \ |\   ___  \|\___   ___\     |\   __  \|\   __  \|\  \
+                    \|___ \  \_\ \  \|\  \ \  \\ \  \ \  \_|\ \ \  \|\  \       \ \  \|\  \ \  \|\  \   \ \  \/  / | \  \\\__\ \  \ \   __/|\ \  \\ \  \|___ \  \_|     \ \  \|\  \ \  \|\  \ \  \
+                         \ \  \ \ \   __  \ \  \\ \  \ \  \ \\ \ \   __  \       \ \   ____\ \   __  \   \ \    / / \ \  \\|__| \  \ \  \_|/_\ \  \\ \  \   \ \  \       \ \   __  \ \   ____\ \  \
+                          \ \  \ \ \  \ \  \ \  \\ \  \ \  \_\\ \ \  \ \  \       \ \  \___|\ \  \ \  \   \/  /  /   \ \  \    \ \  \ \  \_|\ \ \  \\ \  \   \ \  \       \ \  \ \  \ \  \___|\ \  \
+                           \ \__\ \ \__\ \__\ \__\\ \__\ \_______\ \__\ \__\       \ \__\    \ \__\ \__\__/  / /      \ \__\    \ \__\ \_______\ \__\\ \__\   \ \__\       \ \__\ \__\ \__\    \ \__\
+                            \|__|  \|__|\|__|\|__| \|__|\|_______|\|__|\|__|        \|__|     \|__|\|__|\___/ /        \|__|     \|__|\|_______|\|__| \|__|    \|__|        \|__|\|__|\|__|     \|__|                               
+                                                                                                       \|___|/
+
+
+
 ## Process Flow
 #### This was created with visual paradigm online
 
@@ -118,47 +129,53 @@ ZOOKEEPER_SYNC_LIMIT=
 # Testing
 
 #### A) Testing the api while building
+##### DOCKER FILE
 
 ```bash
 mvn surefire:test
 ```
 
 #### B) Testing the api while running
+##### Shell
 ```bash
 curl -f http://localhost:6793/payment-api/ping
 ```
 
-e.g.
+##### Host
 ```bash
 docker exec tanda_payment_api curl -f http://localhost:6793/payment-api/ping
 ```
 
 
 #### C) Testing mariadb
+##### Shell
 ```bash
 healthcheck.sh --connect --innodb_initialized
 ```
 
-e.g.
+##### Host
 ```bash
 docker exec payment_mariadb healthcheck.sh --connect --innodb_initialized
 ```
 
 #### D) Testing kafka
+##### Shell
 ```bash
 kafka-topics --bootstrap-server=kafka:9092 --list
 ```
 
-e.g.
+##### Host
 ```bash
 docker exec payment_kafka kafka-topics --bootstrap-server=kafka:9092 --list
 ```
 
 #### E) Testing zookeeper
+##### Shell
 ```bash
 nc -z localhost 2181
 ```
-e.g.
+##### Host
+
 ```bash
 docker exec payment_zookeeper nc -z localhost 2181
 ```
