@@ -33,7 +33,7 @@ public class KafkaGwRequestConsumerConfig {
         this.kafkaProperties = kafkaProperties;
     }
 
-    //SimpleNotificationForm
+
     public Map<String, Object> jsonConfig() {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaProperties.getBootstrapServers());

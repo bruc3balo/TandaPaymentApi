@@ -1,5 +1,5 @@
 # Stage 1: Build stage i.e. install maven dependancies
-FROM maven:latest as build
+FROM maven:latest AS build
 
 WORKDIR /app
 
