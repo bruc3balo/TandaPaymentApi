@@ -50,7 +50,7 @@ public class B2CTransactionServiceImpl implements B2CTransactionService {
         //Check for duplicate transactions
         b2cTransactionRepository.findByTransactionId(requests.getTransactionId()).ifPresent(
                 transaction -> {
-                    throw HttpStatusException.notFound("Duplicate B2C transaction");
+                    throw HttpStatusException.duplicate("Duplicate B2C transaction");
                 }
         );
 
@@ -78,7 +78,7 @@ public class B2CTransactionServiceImpl implements B2CTransactionService {
         //Check for duplicate transactions
         b2cTransactionRepository.findByTransactionId(requestBodyForm.getTransactionId()).ifPresent(
                 transaction -> {
-                    throw HttpStatusException.notFound("Duplicate B2C transaction");
+                    throw HttpStatusException.duplicate("Duplicate B2C transaction");
                 }
         );
 

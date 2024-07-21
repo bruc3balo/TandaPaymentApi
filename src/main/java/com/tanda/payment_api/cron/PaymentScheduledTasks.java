@@ -3,6 +3,7 @@ package com.tanda.payment_api.cron;
 import com.tanda.payment_api.entities.B2CTransactions;
 import com.tanda.payment_api.entities.GwPendingRequest;
 import com.tanda.payment_api.enums.B2CTransactionStatus;
+import com.tanda.payment_api.exceptions.HttpStatusException;
 import com.tanda.payment_api.models.GwResponse;
 import com.tanda.payment_api.services.b2c.B2CTransactionService;
 import com.tanda.payment_api.services.gw_service.GwService;
@@ -10,6 +11,7 @@ import com.tanda.payment_api.services.kafka.KafkaService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -52,6 +54,15 @@ public class PaymentScheduledTasks {
 
                 kafkaService.sendResponse(gwResponse);
                 log.debug("Sent GwResponse {}", gwResponse.getId());
+
+            } catch (HttpStatusException e) {
+
+                if(e.getStatus() == HttpStatus.CONFLICT) {
+                    //Delete duplicate request
+                    gwService.deleteGwPendingRequest(request);
+                    log.info("Duplicate request cleared");
+                    continue;
+                }
 
             } catch (Exception e) {
 
