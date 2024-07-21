@@ -27,22 +27,15 @@ public class KafkaServiceImpl implements KafkaService {
 
     private final KafkaTemplate<String, GwResponse> gwResponseKafkaTemplate;
     private final GwService gwService;
-    private final B2CTransactionService b2cTransactionService;
 
-    public KafkaServiceImpl(@Qualifier(GlobalVariables.GW_RESPONSE_KAFKA_TEMPLATE) KafkaTemplate<String, GwResponse> gwResponseKafkaTemplate, GwService gwService, B2CTransactionService b2cTransactionService) {
+    public KafkaServiceImpl(@Qualifier(GlobalVariables.GW_RESPONSE_KAFKA_TEMPLATE) KafkaTemplate<String, GwResponse> gwResponseKafkaTemplate, GwService gwService) {
         this.gwResponseKafkaTemplate = gwResponseKafkaTemplate;
         this.gwService = gwService;
-        this.b2cTransactionService = b2cTransactionService;
     }
 
     @KafkaListener(topics = GlobalVariables.KAFKA_GW_REQUEST_TOPIC, groupId = KAFKA_GW_GROUP_ID, containerFactory = KAFKA_GW_REQUEST_CONTAINER_FACTORY)
     public void onReceivePaymentRequest(@Payload GwRequest gwRequest, Acknowledgment ack) {
         log.debug("Received GwRequest : {}", gwRequest.getTransactionId());
-
-        //check if transaction has been recorded
-        b2cTransactionService.findByTransactionId(gwRequest.getTransactionId()).ifPresent((t) -> {
-            throw HttpStatusException.duplicate("B2C Transaction already exists");
-        });
 
         GwPendingRequest pendingRequest = gwService.createRequest(gwRequest);
         ack.acknowledge();
