@@ -38,7 +38,7 @@ public class KafkaGwResponseProducerConfig {
     //GwRequest
     @Bean
     public ProducerFactory<String, GwResponse> gwResponseProducerFactory() {
-        return new DefaultKafkaProducerFactory<>(jsonConfig());
+        return new DefaultKafkaProducerFactory<>(jsonConfig(), new StringSerializer(), new JsonSerializer<>());
     }
 
     @Bean(name = GlobalVariables.GW_RESPONSE_KAFKA_TEMPLATE)

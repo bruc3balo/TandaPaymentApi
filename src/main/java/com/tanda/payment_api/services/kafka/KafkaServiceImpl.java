@@ -11,14 +11,13 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.kafka.support.SendResult;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.CompletableFuture;
 
 import static com.tanda.payment_api.globals.GlobalVariables.KAFKA_GW_GROUP_ID;
+import static com.tanda.payment_api.globals.GlobalVariables.KAFKA_GW_REQUEST_CONTAINER_FACTORY;
 
 @Service
 @Slf4j
@@ -32,7 +31,7 @@ public class KafkaServiceImpl implements KafkaService {
         this.gwService = gwService;
     }
 
-    @KafkaListener(topics = GlobalVariables.KAFKA_GW_REQUEST_TOPIC, groupId = KAFKA_GW_GROUP_ID)
+    @KafkaListener(topics = GlobalVariables.KAFKA_GW_REQUEST_TOPIC, groupId = KAFKA_GW_GROUP_ID, containerFactory = KAFKA_GW_REQUEST_CONTAINER_FACTORY)
     public void onReceivePaymentRequest(@Payload GwRequest gwRequest, Acknowledgment ack) {
         log.debug("Received GwRequest : {}", gwRequest.getTransactionId());
         GwPendingRequest pendingRequest = gwService.createRequest(gwRequest);

@@ -16,12 +16,15 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+    networks:
+      - tanda_network
 
   kafka:
     image: confluentinc/cp-kafka:7.4.4
     container_name: payment_kafka
     hostname: kafka
     restart: unless-stopped
+
     ports:
       - "9092:9092"
       - "29092:29092"
@@ -37,6 +40,8 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+    networks:
+      - tanda_network
 
 volumes:
 
@@ -45,3 +50,4 @@ volumes:
 
   kafka_data:
     driver: local
+

@@ -16,6 +16,7 @@ import java.util.List;
 public class KafkaProperties {
 
     private String clientId;
+
     private List<String> bootstrapServers;
 
     public KafkaProperties() {

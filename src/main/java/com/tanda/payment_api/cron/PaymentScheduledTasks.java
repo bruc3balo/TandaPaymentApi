@@ -70,7 +70,6 @@ public class PaymentScheduledTasks {
                     continue;
                 }
 
-
                 request.setRetryCount(request.getRetryCount() + 1);
                 request.setStatusReason(e.getMessage());
                 gwService.updateGwPendingRequest(request);

@@ -20,17 +20,23 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+    networks:
+      - tanda_network
     command: "java -jar /payment-api.jar"
 
   mariadb:
     extends:
       service: mariadb
       file: mariadb/mariadb-docker-compose.yaml
+    networks:
+      - tanda_network
 
   zookeeper:
     extends:
       service: zookeeper
       file: kafka/kafka-docker-compose.yaml
+    networks:
+      - tanda_network
 
   kafka:
     extends:
@@ -38,8 +44,14 @@ services:
       file: kafka/kafka-docker-compose.yaml
     depends_on:
       - zookeeper
+    networks:
+      - tanda_network
 
 volumes:
   mariadb_data:
   kafka_data:
   zookeeper_data:
+
+networks:
+  tanda_network:
+    external: true

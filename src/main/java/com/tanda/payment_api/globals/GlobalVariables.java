@@ -15,6 +15,7 @@ public class GlobalVariables {
     public static final String CONVERSATION_ID = "ConversationID";
     public static final String ORIGINATOR_CONVERSATION_ID = "OriginatorConversationID";
     public static final String KAFKA_GW_GROUP_ID = "gw_payment";
+    public static final String KAFKA_GW_REQUEST_CONTAINER_FACTORY = "gwRequestKafkaContainerFactory";
     public static final String KAFKA_GW_REQUEST_TOPIC = "gw_request";
     public static final String KAFKA_GW_RESPONSE_TOPIC = "gw_response";
     public static final String RESULT = "Result";
