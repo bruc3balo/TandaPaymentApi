@@ -61,8 +61,8 @@ public class B2CTransactionServiceImpl implements B2CTransactionService {
         B2CTransactions transaction = doInitiateB2c(b2CResponseModel, b2CTransactions);
 
         //Assert that status should be pending
-        if(transaction.getStatus() != B2CTransactionStatus.PENDING) {
-            throw HttpStatusException.failed("Transaction "+transaction.getStatus().name());
+        if (transaction.getStatus() != B2CTransactionStatus.PENDING) {
+            throw HttpStatusException.failed("Transaction " + transaction.getStatus().name());
         }
 
         return transaction;
@@ -218,6 +218,20 @@ public class B2CTransactionServiceImpl implements B2CTransactionService {
     @Override
     public Page<B2CTransactions> getB2cTransactions(Pageable pageable) {
         return b2cTransactionRepository.findAll(pageable);
+    }
+
+    //To be used only for test purposes
+    // Not for prod
+    @Override
+    public void removeTransaction(String id) {
+
+        //Not necessary for performance
+        if (b2cTransactionRepository.findById(id).isEmpty())
+            throw HttpStatusException.notFound("Transaction not found");
+
+        b2cTransactionRepository.deleteById(id);
+
+
     }
 
 }

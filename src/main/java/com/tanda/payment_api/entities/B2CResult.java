@@ -38,10 +38,10 @@ public class B2CResult {
     @Column(name = "originator_conversation_id")
     private String originatorConversationId;
 
-    @Column(name = "conversation_id")
+    @Column(name = "conversation_id", unique = true)
     private String conversationId;
 
-    @Column(name = "transaction_id")
+    @Column(name = "transaction_id", unique = true)
     private String transactionId;
 
     @Column(name = "queue_timeout_url")

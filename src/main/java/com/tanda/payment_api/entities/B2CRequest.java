@@ -35,6 +35,8 @@ public class B2CRequest {
     private String originatorConversationId;
 
     @Column(name = "security_credential", length = 500)
+    @JsonIgnore
+    //Todo hide from public or generate on demand
     private String securityCredential;
 
     @Column(name = "command_id")
@@ -47,6 +49,7 @@ public class B2CRequest {
 
     @Column(name = "partyb")
     private Long partyB;
+
     private String remarks;
 
     @Column(name = "time_out_url")

@@ -14,7 +14,7 @@
 ## Process Flow
 #### This was created with visual paradigm online
 There is a demo of the core payment system functionality to simulate the B2C transaction to the payment api integration
-at [this link](TandaCPSDemo)
+at [this link](https://github.com/bruc3balo/TandaCPSDemo)
 
 ![Transaction Process Flow](docs/sequence_diagram.png)
 

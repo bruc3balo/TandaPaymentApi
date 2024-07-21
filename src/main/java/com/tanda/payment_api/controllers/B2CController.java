@@ -73,4 +73,17 @@ public class B2CController {
                 .build();
         return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
+
+    @DeleteMapping("transaction")
+    public ResponseEntity<?> testDeleteTransaction(@RequestParam String id) {
+
+        b2CTransactionService.removeTransaction(id);
+
+        var status = HttpStatus.OK;
+        ApiResponse<?> apiResponse = ApiResponse.builder()
+                .description("Transaction has been removed")
+                .status(status.value())
+                .build();
+        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+    }
 }
