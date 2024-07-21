@@ -1,13 +1,13 @@
 package com.tanda.payment_api.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.tanda.payment_api.globals.GlobalVariables;
+import com.tanda.payment_api.globals.GPaymentVariables;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.validator.constraints.URL;
 
-import static com.tanda.payment_api.globals.GlobalVariables.*;
+import static com.tanda.payment_api.globals.GPaymentVariables.*;
 
 @Getter
 @Setter
@@ -26,8 +26,8 @@ public class B2CRequestForm extends B2CRequestBodyForm {
     @URL(message = "Invalid " + RESULT_URL + "format")
     private String resultURL;
 
-    @JsonProperty(GlobalVariables.ORIGINATOR_CONVERSATION_ID)
-    @NotBlank(message = GlobalVariables.ORIGINATOR_CONVERSATION_ID + _REQUIRED)
+    @JsonProperty(GPaymentVariables.ORIGINATOR_CONVERSATION_ID)
+    @NotBlank(message = GPaymentVariables.ORIGINATOR_CONVERSATION_ID + _REQUIRED)
     private String originatorConversationID;
 
     public B2CRequestForm() {

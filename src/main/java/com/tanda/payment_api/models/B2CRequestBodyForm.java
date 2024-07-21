@@ -1,7 +1,6 @@
 package com.tanda.payment_api.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.tanda.payment_api.globals.GlobalVariables;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -10,7 +9,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.validator.constraints.Length;
 
-import static com.tanda.payment_api.globals.GlobalVariables.*;
+import static com.tanda.payment_api.globals.GPaymentVariables.*;
 
 @Getter
 @Setter
@@ -18,6 +17,9 @@ import static com.tanda.payment_api.globals.GlobalVariables.*;
 @AllArgsConstructor
 public class B2CRequestBodyForm {
 
+    @NotBlank(message = TRANSACTION_ID + _REQUIRED)
+    @JsonProperty(TRANSACTION_ID)
+    private String transactionId;
 
     @JsonProperty(INITIATOR_NAME)
     @NotBlank(message = INITIATOR_NAME + _REQUIRED)

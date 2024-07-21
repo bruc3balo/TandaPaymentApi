@@ -1,7 +1,7 @@
 package com.tanda.payment_api.configs.kafka;
 
 
-import com.tanda.payment_api.globals.GlobalVariables;
+import com.tanda.payment_api.globals.GPaymentVariables;
 import com.tanda.payment_api.models.GwRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.tanda.payment_api.globals.GlobalVariables.KAFKA_GW_REQUEST_CONTAINER_FACTORY;
+import static com.tanda.payment_api.globals.GPaymentVariables.KAFKA_GW_REQUEST_CONTAINER_FACTORY;
 
 @Configuration
 @ComponentScan(basePackageClasses = {KafkaProperties.class})
@@ -41,7 +41,7 @@ public class KafkaGwRequestConsumerConfig {
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaProperties.getBootstrapServers());
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, GlobalVariables.KAFKA_GW_GROUP_ID);
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, GPaymentVariables.KAFKA_GW_GROUP_ID);
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
         props.put(ConsumerConfig.CLIENT_ID_CONFIG, UUID.randomUUID().toString());
         props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");

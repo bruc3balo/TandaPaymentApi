@@ -29,6 +29,9 @@ public class B2CTransactions {
     @UuidGenerator
     private String id;
 
+    @Column(name = "transaction_id", unique = true, nullable = false)
+    private String transactionId;
+
     @Column(name = "conversation_id", unique = true)
     private String conversationId;
 

@@ -7,7 +7,7 @@ import com.tanda.payment_api.entities.B2CTransactions;
 import com.tanda.payment_api.entities.GwPendingRequest;
 import com.tanda.payment_api.enums.B2CTransactionStatus;
 import com.tanda.payment_api.exceptions.HttpStatusException;
-import com.tanda.payment_api.globals.GlobalVariables;
+import com.tanda.payment_api.globals.GPaymentVariables;
 import com.tanda.payment_api.models.*;
 import com.tanda.payment_api.repositories.B2CTransactionRepository;
 import com.tanda.payment_api.services.daraja.DarajaService;
@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.tanda.payment_api.globals.GlobalVariables.TRANSACTION_COMPLETED_DATE_TIME_DATE_FORMAT;
+import static com.tanda.payment_api.globals.GPaymentVariables.TRANSACTION_COMPLETED_DATE_TIME_DATE_FORMAT;
 
 @Service
 @Transactional
@@ -47,54 +47,63 @@ public class B2CTransactionServiceImpl implements B2CTransactionService {
     @Override
     public B2CTransactions initiateB2C(GwPendingRequest requests) throws JsonProcessingException {
 
-        // Authenticate
-        DarajaAuthResponse authResponse = darajaService.authenticate();
-        String accessToken = authResponse.getAccessToken();
+        //Check for duplicate transactions
+        b2cTransactionRepository.findByTransactionId(requests.getTransactionId()).ifPresent(
+                transaction -> {
+                    throw HttpStatusException.notFound("Duplicate B2C transaction");
+                }
+        );
 
         // Send b2c request
         B2CTransactions b2CTransactions = B2CTransactions.builder()
                 .status(B2CTransactionStatus.INITIATING)
+                .transactionId(requests.getTransactionId())
                 .build();
         b2CTransactions = b2cTransactionRepository.save(b2CTransactions);
 
+        // Authenticate
+        DarajaAuthResponse authResponse = darajaService.authenticate();
+        String accessToken = authResponse.getAccessToken();
+
         //Receive b2c response
         B2CResponseModel b2CResponseModel = darajaService.initiateB2cGWRequest(accessToken, b2CTransactions.getId(), requests);
-        B2CTransactions transaction = doInitiateB2c(b2CResponseModel, b2CTransactions);
 
-        //Assert that status should be pending
-        if (transaction.getStatus() != B2CTransactionStatus.PENDING) {
-            throw HttpStatusException.failed("Transaction " + transaction.getStatus().name());
-        }
-
-        return transaction;
+        return attachB2CResponse(b2CResponseModel, b2CTransactions);
     }
 
     //From Api Source
     @Override
     public B2CTransactions initiateB2C(@Valid B2CRequestBodyForm requestBodyForm) throws JsonProcessingException {
 
-        // Authenticate
-        DarajaAuthResponse authResponse = darajaService.authenticate();
-        String accessToken = authResponse.getAccessToken();
+        //Check for duplicate transactions
+        b2cTransactionRepository.findByTransactionId(requestBodyForm.getTransactionId()).ifPresent(
+                transaction -> {
+                    throw HttpStatusException.notFound("Duplicate B2C transaction");
+                }
+        );
 
         // Send b2c request
         B2CTransactions b2CTransactions = B2CTransactions.builder()
                 .status(B2CTransactionStatus.INITIATING)
+                .transactionId(requestBodyForm.getTransactionId())
                 .build();
         b2CTransactions = b2cTransactionRepository.save(b2CTransactions);
 
+        // Authenticate
+        DarajaAuthResponse authResponse = darajaService.authenticate();
+        String accessToken = authResponse.getAccessToken();
+
         //Receive b2c response
         B2CResponseModel b2CResponseModel = darajaService.initiateB2cApiRequest(accessToken, b2CTransactions.getId(), requestBodyForm);
-        return doInitiateB2c(b2CResponseModel, b2CTransactions);
+        return attachB2CResponse(b2CResponseModel, b2CTransactions);
     }
 
-    //Do common functions from initiateB2C
-    private B2CTransactions doInitiateB2c(B2CResponseModel b2CResponseModel, B2CTransactions b2CTransactions) {
+    //Attach response
+    private B2CTransactions attachB2CResponse(B2CResponseModel b2CResponseModel, B2CTransactions b2CTransactions) {
 
         log.debug("B2C :: {} => {}", b2CResponseModel.getOriginatorConversationID(), b2CResponseModel.getResponseDescription());
 
         // Persist request details
-
         B2CRequestForm form = b2CResponseModel.getForm();
 
         B2CRequest b2CRequest = B2CRequest.builder()
@@ -123,7 +132,7 @@ public class B2CTransactionServiceImpl implements B2CTransactionService {
         return b2cTransactionRepository.save(b2CTransactions);
     }
 
-    //Receive result of b2c from daraja
+    //Receive result of B2C from daraja
     @Override
     public B2CTransactions onB2cResult(B2CResultRequestBodyForm form) {
 
@@ -163,21 +172,21 @@ public class B2CTransactionServiceImpl implements B2CTransactionService {
             Map<String, String> resultParameters = resultForm.getResultParameters().getResultParameter()
                     .stream().collect(Collectors.toMap(KeyValueItemPair::getKey, KeyValueItemPair::getValue));
 
-            String transactionAmount = resultParameters.get(GlobalVariables.TRANSACTION_AMOUNT);
-            String transactionReceipt = resultParameters.get(GlobalVariables.TRANSACTION_RECEIPT);
-            Boolean b2cRecipientRegisteredCustomer = resultParameters.get(GlobalVariables.B2C_RECIPIENT_IS_REGISTERED_CUSTOMER).equals("Y");
-            BigDecimal b2cChargesPaidAccountAvailableFunds = new BigDecimal(resultParameters.get(GlobalVariables.B2C_CHARGES_PAID_ACCOUNT_AVAILABLE_FUNDS));
+            String transactionAmount = resultParameters.get(GPaymentVariables.TRANSACTION_AMOUNT);
+            String transactionReceipt = resultParameters.get(GPaymentVariables.TRANSACTION_RECEIPT);
+            Boolean b2cRecipientRegisteredCustomer = resultParameters.get(GPaymentVariables.B2C_RECIPIENT_IS_REGISTERED_CUSTOMER).equals("Y");
+            BigDecimal b2cChargesPaidAccountAvailableFunds = new BigDecimal(resultParameters.get(GPaymentVariables.B2C_CHARGES_PAID_ACCOUNT_AVAILABLE_FUNDS));
 
-            String receiverPartyPublicName = resultParameters.get(GlobalVariables.RECEIVER_PARTY_PUBLIC_NAME);
+            String receiverPartyPublicName = resultParameters.get(GPaymentVariables.RECEIVER_PARTY_PUBLIC_NAME);
             String[] receiverInfo = receiverPartyPublicName.split("-");
             String number = receiverInfo[0];
             String name = receiverInfo[1];
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern(TRANSACTION_COMPLETED_DATE_TIME_DATE_FORMAT);
-            LocalDateTime transactionCompletedDateTime = LocalDateTime.parse(resultParameters.get(GlobalVariables.TRANSACTION_COMPLETED_DATE_TIME), formatter);
+            LocalDateTime transactionCompletedDateTime = LocalDateTime.parse(resultParameters.get(GPaymentVariables.TRANSACTION_COMPLETED_DATE_TIME), formatter);
 
-            BigDecimal b2CUtilityAccountAvailableFunds = new BigDecimal(resultParameters.get(GlobalVariables.B2C_UTILITY_ACCOUNT_AVAILABLE_FUNDS));
-            BigDecimal b2CWorkingAccountAvailableFunds = new BigDecimal(resultParameters.get(GlobalVariables.B2C_WORKING_ACCOUNT_AVAILABLE_FUNDS));
+            BigDecimal b2CUtilityAccountAvailableFunds = new BigDecimal(resultParameters.get(GPaymentVariables.B2C_UTILITY_ACCOUNT_AVAILABLE_FUNDS));
+            BigDecimal b2CWorkingAccountAvailableFunds = new BigDecimal(resultParameters.get(GPaymentVariables.B2C_WORKING_ACCOUNT_AVAILABLE_FUNDS));
 
             B2CResult b2CResult = B2CResult.builder()
                     .resultCode(resultCode)
@@ -217,7 +226,7 @@ public class B2CTransactionServiceImpl implements B2CTransactionService {
 
     @Override
     public Optional<B2CTransactions> findByTransactionId(String transactionId) {
-        if(transactionId == null) return Optional.empty();
+        if (transactionId == null) return Optional.empty();
         return b2cTransactionRepository.findById(transactionId);
     }
 
@@ -237,8 +246,6 @@ public class B2CTransactionServiceImpl implements B2CTransactionService {
             throw HttpStatusException.notFound("Transaction not found");
 
         b2cTransactionRepository.deleteById(id);
-
-
     }
 
 }

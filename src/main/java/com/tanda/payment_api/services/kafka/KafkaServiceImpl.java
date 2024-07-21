@@ -1,11 +1,9 @@
 package com.tanda.payment_api.services.kafka;
 
 import com.tanda.payment_api.entities.GwPendingRequest;
-import com.tanda.payment_api.exceptions.HttpStatusException;
-import com.tanda.payment_api.globals.GlobalVariables;
+import com.tanda.payment_api.globals.GPaymentVariables;
 import com.tanda.payment_api.models.GwRequest;
 import com.tanda.payment_api.models.GwResponse;
-import com.tanda.payment_api.services.b2c.B2CTransactionService;
 import com.tanda.payment_api.services.gw_service.GwService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -18,8 +16,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.concurrent.CompletableFuture;
 
-import static com.tanda.payment_api.globals.GlobalVariables.KAFKA_GW_GROUP_ID;
-import static com.tanda.payment_api.globals.GlobalVariables.KAFKA_GW_REQUEST_CONTAINER_FACTORY;
+import static com.tanda.payment_api.globals.GPaymentVariables.KAFKA_GW_GROUP_ID;
+import static com.tanda.payment_api.globals.GPaymentVariables.KAFKA_GW_REQUEST_CONTAINER_FACTORY;
 
 @Service
 @Slf4j
@@ -28,12 +26,12 @@ public class KafkaServiceImpl implements KafkaService {
     private final KafkaTemplate<String, GwResponse> gwResponseKafkaTemplate;
     private final GwService gwService;
 
-    public KafkaServiceImpl(@Qualifier(GlobalVariables.GW_RESPONSE_KAFKA_TEMPLATE) KafkaTemplate<String, GwResponse> gwResponseKafkaTemplate, GwService gwService) {
+    public KafkaServiceImpl(@Qualifier(GPaymentVariables.GW_RESPONSE_KAFKA_TEMPLATE) KafkaTemplate<String, GwResponse> gwResponseKafkaTemplate, GwService gwService) {
         this.gwResponseKafkaTemplate = gwResponseKafkaTemplate;
         this.gwService = gwService;
     }
 
-    @KafkaListener(topics = GlobalVariables.KAFKA_GW_REQUEST_TOPIC, groupId = KAFKA_GW_GROUP_ID, containerFactory = KAFKA_GW_REQUEST_CONTAINER_FACTORY)
+    @KafkaListener(topics = GPaymentVariables.KAFKA_GW_REQUEST_TOPIC, groupId = KAFKA_GW_GROUP_ID, containerFactory = KAFKA_GW_REQUEST_CONTAINER_FACTORY)
     public void onReceivePaymentRequest(@Payload GwRequest gwRequest, Acknowledgment ack) {
         log.debug("Received GwRequest : {}", gwRequest.getTransactionId());
 
@@ -44,7 +42,7 @@ public class KafkaServiceImpl implements KafkaService {
     @Override
     public CompletableFuture<SendResult<String, GwResponse>> sendResponse(GwResponse gwResponse) {
         log.debug("Sending GwResponse : {}", gwResponse.getId());
-        return gwResponseKafkaTemplate.send(GlobalVariables.KAFKA_GW_RESPONSE_TOPIC, gwResponse.getId(), gwResponse);
+        return gwResponseKafkaTemplate.send(GPaymentVariables.KAFKA_GW_RESPONSE_TOPIC, gwResponse.getId(), gwResponse);
     }
 
 }

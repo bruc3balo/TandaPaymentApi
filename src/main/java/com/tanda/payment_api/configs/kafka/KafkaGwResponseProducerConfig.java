@@ -1,7 +1,6 @@
 package com.tanda.payment_api.configs.kafka;
 
-import com.tanda.payment_api.globals.GlobalVariables;
-import com.tanda.payment_api.models.GwRequest;
+import com.tanda.payment_api.globals.GPaymentVariables;
 import com.tanda.payment_api.models.GwResponse;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -41,7 +40,7 @@ public class KafkaGwResponseProducerConfig {
         return new DefaultKafkaProducerFactory<>(jsonConfig(), new StringSerializer(), new JsonSerializer<>());
     }
 
-    @Bean(name = GlobalVariables.GW_RESPONSE_KAFKA_TEMPLATE)
+    @Bean(name = GPaymentVariables.GW_RESPONSE_KAFKA_TEMPLATE)
     public KafkaTemplate<String, GwResponse> gwResponseKafkaTemplate(ProducerFactory<String, GwResponse> gwResponseProducerFactory) {
         return new KafkaTemplate<>(gwResponseProducerFactory);
     }

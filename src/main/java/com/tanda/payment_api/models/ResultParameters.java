@@ -1,7 +1,7 @@
 package com.tanda.payment_api.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.tanda.payment_api.globals.GlobalVariables;
+import com.tanda.payment_api.globals.GPaymentVariables;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,7 +11,7 @@ import java.util.List;
 @Setter
 public class ResultParameters {
 
-    @JsonProperty(GlobalVariables.RESULT_PARAMETER)
+    @JsonProperty(GPaymentVariables.RESULT_PARAMETER)
     private List<KeyValueItemPair> resultParameter;
 
     public ResultParameters() {

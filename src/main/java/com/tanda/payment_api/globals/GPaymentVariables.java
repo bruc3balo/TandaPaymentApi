@@ -1,6 +1,6 @@
 package com.tanda.payment_api.globals;
 
-public class GlobalVariables {
+public class GPaymentVariables {
     public static final Integer MAX_RETRY_COUNT = 3;
     public static final String GW_RESPONSE_KAFKA_TEMPLATE = "gwResponseKafkaTemplate";
     public static final String QUEUE_TIME_OUT_URL = "QueueTimeOutURL";

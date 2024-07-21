@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
-import static com.tanda.payment_api.globals.GlobalVariables.MAX_RETRY_COUNT;
+import static com.tanda.payment_api.globals.GPaymentVariables.MAX_RETRY_COUNT;
 
 @Component
 @Slf4j
@@ -46,7 +46,7 @@ public class PaymentScheduledTasks {
                 log.debug("Cleared GwRequest {}", request.getId());
 
                 GwResponse gwResponse = GwResponse.builder()
-                        .id(request.getId())
+                        .id(request.getTransactionId())
                         .status(B2CTransactionStatus.FAILED.name())
                         .build();
 
