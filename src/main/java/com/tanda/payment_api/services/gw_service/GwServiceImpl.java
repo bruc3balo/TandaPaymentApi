@@ -1,6 +1,7 @@
 package com.tanda.payment_api.services.gw_service;
 
 import com.tanda.payment_api.entities.GwPendingRequest;
+import com.tanda.payment_api.exceptions.HttpStatusException;
 import com.tanda.payment_api.models.GwRequest;
 import com.tanda.payment_api.repositories.GwPendingRequestsRepository;
 import jakarta.validation.Valid;
@@ -28,6 +29,10 @@ public class GwServiceImpl implements GwService {
 
     @Override
     public GwPendingRequest createRequest(@Valid GwRequest gwRequest) {
+
+        pendingRequestsRepository.findByTransactionId(gwRequest.getTransactionId()).ifPresent((t) -> {
+            throw HttpStatusException.duplicate("Request already exists");
+        });
 
         GwPendingRequest pendingRequests = GwPendingRequest.builder()
                 .amount(gwRequest.getAmount())

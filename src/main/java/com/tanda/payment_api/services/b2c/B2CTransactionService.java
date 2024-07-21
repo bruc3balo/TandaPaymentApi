@@ -8,10 +8,13 @@ import com.tanda.payment_api.models.B2CResultRequestBodyForm;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Optional;
+
 public interface B2CTransactionService {
     B2CTransactions initiateB2C(GwPendingRequest form) throws JsonProcessingException;
     B2CTransactions initiateB2C(B2CRequestBodyForm form) throws JsonProcessingException;
     B2CTransactions onB2cResult(B2CResultRequestBodyForm form);
+    Optional<B2CTransactions> findByTransactionId(String transactionId);
     Page<B2CTransactions> getB2cTransactions(Pageable pageable);
     void removeTransaction(String id);
 }

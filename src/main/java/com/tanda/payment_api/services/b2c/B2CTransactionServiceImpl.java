@@ -23,6 +23,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.tanda.payment_api.globals.GlobalVariables.TRANSACTION_COMPLETED_DATE_TIME_DATE_FORMAT;
@@ -212,6 +213,12 @@ public class B2CTransactionServiceImpl implements B2CTransactionService {
         kafkaService.sendResponse(gwResponse);
 
         return b2CTransactions;
+    }
+
+    @Override
+    public Optional<B2CTransactions> findByTransactionId(String transactionId) {
+        if(transactionId == null) return Optional.empty();
+        return b2cTransactionRepository.findById(transactionId);
     }
 
     //Retrieve list of transactions

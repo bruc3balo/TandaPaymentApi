@@ -26,7 +26,7 @@ public class GwPendingRequest {
     @UuidGenerator
     private String id;
 
-    @Column(name = "transaction_id")
+    @Column(name = "transaction_id", unique = true, nullable = false)
     private String transactionId;
 
     private BigDecimal amount;
