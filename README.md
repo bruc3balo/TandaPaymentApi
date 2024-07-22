@@ -1,24 +1,26 @@
 
 
-                     _________  ________  ________   ________  ________          ________  ________      ___    ___ _____ ______   _______   ________   _________        ________  ________  ___
-                    |\___   ___\\   __  \|\   ___  \|\   ___ \|\   __  \        |\   __  \|\   __  \    |\  \  /  /|\   _ \  _   \|\  ___ \ |\   ___  \|\___   ___\     |\   __  \|\   __  \|\  \
-                    \|___ \  \_\ \  \|\  \ \  \\ \  \ \  \_|\ \ \  \|\  \       \ \  \|\  \ \  \|\  \   \ \  \/  / | \  \\\__\ \  \ \   __/|\ \  \\ \  \|___ \  \_|     \ \  \|\  \ \  \|\  \ \  \
-                         \ \  \ \ \   __  \ \  \\ \  \ \  \ \\ \ \   __  \       \ \   ____\ \   __  \   \ \    / / \ \  \\|__| \  \ \  \_|/_\ \  \\ \  \   \ \  \       \ \   __  \ \   ____\ \  \
-                          \ \  \ \ \  \ \  \ \  \\ \  \ \  \_\\ \ \  \ \  \       \ \  \___|\ \  \ \  \   \/  /  /   \ \  \    \ \  \ \  \_|\ \ \  \\ \  \   \ \  \       \ \  \ \  \ \  \___|\ \  \
-                           \ \__\ \ \__\ \__\ \__\\ \__\ \_______\ \__\ \__\       \ \__\    \ \__\ \__\__/  / /      \ \__\    \ \__\ \_______\ \__\\ \__\   \ \__\       \ \__\ \__\ \__\    \ \__\
-                            \|__|  \|__|\|__|\|__| \|__|\|_______|\|__|\|__|        \|__|     \|__|\|__|\___/ /        \|__|     \|__|\|_______|\|__| \|__|    \|__|        \|__|\|__|\|__|     \|__|                               
-                                                                                                       \|___|/
+     _________  ________  ________   ________  ________          ________  ________      ___    ___ _____ ______   _______   ________   _________        ________  ________  ___
+    |\___   ___\\   __  \|\   ___  \|\   ___ \|\   __  \        |\   __  \|\   __  \    |\  \  /  /|\   _ \  _   \|\  ___ \ |\   ___  \|\___   ___\     |\   __  \|\   __  \|\  \
+    \|___ \  \_\ \  \|\  \ \  \\ \  \ \  \_|\ \ \  \|\  \       \ \  \|\  \ \  \|\  \   \ \  \/  / | \  \\\__\ \  \ \   __/|\ \  \\ \  \|___ \  \_|     \ \  \|\  \ \  \|\  \ \  \
+         \ \  \ \ \   __  \ \  \\ \  \ \  \ \\ \ \   __  \       \ \   ____\ \   __  \   \ \    / / \ \  \\|__| \  \ \  \_|/_\ \  \\ \  \   \ \  \       \ \   __  \ \   ____\ \  \
+          \ \  \ \ \  \ \  \ \  \\ \  \ \  \_\\ \ \  \ \  \       \ \  \___|\ \  \ \  \   \/  /  /   \ \  \    \ \  \ \  \_|\ \ \  \\ \  \   \ \  \       \ \  \ \  \ \  \___|\ \  \
+           \ \__\ \ \__\ \__\ \__\\ \__\ \_______\ \__\ \__\       \ \__\    \ \__\ \__\__/  / /      \ \__\    \ \__\ \_______\ \__\\ \__\   \ \__\       \ \__\ \__\ \__\    \ \__\
+            \|__|  \|__|\|__|\|__| \|__|\|_______|\|__|\|__|        \|__|     \|__|\|__|\___/ /        \|__|     \|__|\|_______|\|__| \|__|    \|__|        \|__|\|__|\|__|     \|__|  
+                                                                                       \|___|/
 
 
 
 ## Process Flow
 #### This was created with visual paradigm online
-There is a demo of the core payment system functionality to simulate the B2C transaction to the payment api integration
-at [this link](https://github.com/bruc3balo/TandaCPSDemo)
+
+# [~ SIMULATE (CPS) Core Payment System Demo ~](https://github.com/bruc3balo/TandaCPSDemo)
+There is a demo of the core payment system functionality to simulate the B2C transaction to the payment api integration.
+
 
 ![Transaction Process Flow](docs/sequence_diagram.png)
 
-### [Swagger documentation](http://localhost:6793/payment-api/swagger-ui/index.html)
+### [Open Swagger documentation](http://localhost:6793/payment-api/swagger-ui/index.html)
 #### Click above to open open ai documentation
 
 # MariaDB
@@ -47,30 +49,43 @@ Code changes will be picked up by building a new image or passing **--build** se
 
 Necessary health checks have been put in place to ensure container uptime and ease of debugging
 
-### Deploy Whole Infrastructure (For initial builds)
+### Step 1: Create Docker Network
+```bash
+docker network create tanda_network
+```
+
+### Step 2: Deploy Whole Infrastructure
+#### For initial build to create images i.e. No images build
 ```bash
 docker compose -f payment-docker-compose.yaml up --build -d
 ```
-
-### Prune The Whole Infrastructure
-```bash
-docker compose -f payment-docker-compose.yaml down -v   
-```
-
-### Start all containers without building image (After successful initial build)
+#### Start all containers without building image i.e. After successful initial build
 ```bash
 docker compose -f payment-docker-compose.yaml up -d
 ```
 
-### Stop all containers without deleting volume
+### Step 3: Watch Logs from all containers
+```bash
+docker compose -f payment-docker-compose.yaml logs -f
+```
+
+### Step 4: Clean up
+
+#### Stop all containers without deleting volume
 ```bash
 docker compose -f payment-docker-compose.yaml down
 ```
 
-### Watch Logs from all containers
+#### Prune The Whole Infrastructure
+
 ```bash
-docker compose -f payment-docker-compose.yaml logs -f
+docker compose -f payment-docker-compose.yaml down -v   
 ```
+
+
+
+
+
 
 # Environment Variables
 ### N/B: It's bad practice to push secrets to a repository. This is just to make testing easy
